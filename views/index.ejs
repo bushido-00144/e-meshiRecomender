@@ -74,7 +74,14 @@
         <% } %>
       </select>
       総合評価：
-      <input type="number" value="0" name="Comprehensive">
+      <input type="number" value="0" name="Comprehensive" min="0.0" max="5.0" step="0.1">
+      <br />
+      味：
+      <input type="number" value="0" name="Taste" min="0.0" max="5.0" step="0.1">
+      <br />
+      サービス：
+      <input type="number" value="0" name="Service" min="0.0" max="5.0" step="0.1">
+      <br />
       <input type="submit">
     </form>
   </body>
