@@ -63,14 +63,14 @@
     </form>
 
     <form action="/reviews/" method="post">
-      <select name="user">
+      <select name="Reviewer">
           <% for(let user of users) { %>
-        <option name="Reviewer" value="<%= user.id %>"><%= user.Name %></option>
+        <option value="<%= user.id %>"><%= user.Name %></option>
           <% } %>
       </select>
-      <select name="restaurant">
+      <select name="RestaurantID">
         <% for(let restaurant of restaurants) { %>
-        <option name="RestaurantID" value="<%= restaurant.id %>"><%= restaurant.Name %></option>
+        <option value="<%= restaurant.id %>"><%= restaurant.Name %></option>
         <% } %>
       </select>
       総合評価：
