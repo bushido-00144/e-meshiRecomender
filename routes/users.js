@@ -15,7 +15,6 @@ router.get('/', function(req, res, next) {
  */
 router.post('/', function(req, res, next) {
     let params = req.body;
-    console.log(params);
     let username = params.Username;
     delete params.Username;
     let tags = [];

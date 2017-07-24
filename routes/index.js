@@ -10,7 +10,6 @@ router.get('/', function(req, res , next) {
       model.Tag.findAll(),
       model.User.findAll()
   ]).then(function(results) {
-      console.log(results);
       res.render('index', { tags: results[1], restaurants: results[0], users: results[2] });
   }).catch(function(err) {
       console.log(err);
