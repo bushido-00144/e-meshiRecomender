@@ -14,8 +14,20 @@ router.get('/', function(req, res, next) {
  * Add user
  */
 router.post('/', function(req, res, next) {
-    console.log(req.body);
-    models.User.create(req.body).then(function(){
+    let params = req.body;
+    console.log(params);
+    let username = params.Username;
+    delete params.Username;
+    let tags = [];
+    for(let tag in params) {
+        if(tag) {
+            tags.push(tag)
+        }
+    }
+    models.User.create({
+        Name: username,
+        Tag: JSON.stringify(tags)
+    }).then(function(){
       res.send({Code: 200, Message: 'OK'});
     }).catch(function(err){
       console.log(err);

@@ -1,11 +1,50 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title>e-meshiRecomender</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+
+    <script type="text/javascript">
+      let addTag = () => {
+          let newTag = document.getElementById('newTag').value;
+          console.log(newTag);
+          fetch('/tags/', {
+              method: 'POST',
+              body: JSON.stringify({newTag: newTag}),
+              headers: {
+                  'Accept': 'aplication/json',
+                  'Content-Type': 'application/json'
+              }
+          }).then((res) => {
+             return res.json();
+          }).then((res) => {
+              console.log(res);
+              let tagEle = document.createElement('input');
+              tagEle.name = res.id;
+              tagEle.type = "checkbox";
+              tagEle.innerHTML = res.tagname;
+              document.getElementById('tags').appendChild(tagEle);
+          });
+      };
+    </script>
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <h3>ユーザー登録</h3>
+    <form action="/users/" method="post">
+      ユーザ名：
+      <input type="text" name="Username">
+      <br />
+      好みのタグ：
+      <div id="tags">
+          <% for(let tag of tags) { %>
+        <input type="checkbox" name="<%= tag.id %>"><%= tag.Tag %>
+          <% } %>
+      </div>
+      <br />
+      <input type="submit">
+    </form>
+    タグ追加：
+    <input type="text" id="newTag">
+    <button id="addTagButton" onclick="addTag()">タグ追加</button>
   </body>
 </html>
