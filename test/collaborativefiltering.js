@@ -17,4 +17,6 @@ for(let item in othersData[users[0]]) {
 let recipientData = CollaborateFiltering.generateRecipientData(items);
 
 let recommendItems = CollaborateFiltering.recommend(recipientData, othersData);
+console.log(othersData);
+console.log(recipientData);
 console.log(recommendItems);

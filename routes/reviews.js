@@ -17,6 +17,7 @@ router.get('/', function(req, res, next) {
  * Add review
  */
 router.post('/', function(req, res, next) {
+    console.log(req.body);
     models.Review.create(req.body).then(function(){
         res.redirect('/');
     }).catch(function(err){
