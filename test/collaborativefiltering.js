@@ -1,7 +1,7 @@
 /**
  * Created by bushido on 2017/07/23.
  */
-let CollaborateFiltering = require('../collaborativefiltering');
+let CollaborateFiltering = require('../lib/collaborativefiltering');
 
 let othersData = CollaborateFiltering.generateData(10, 20);
 
