@@ -46,5 +46,20 @@
     タグ追加：
     <input type="text" id="newTag">
     <button id="addTagButton" onclick="addTag()">タグ追加</button>
+
+    <h3>お店登録</h3>
+    <form action="/restaurants/" method="post">
+      店名：
+      <input type="text" name="Name">
+      <br />
+      タグ：
+      <div id="tags">
+          <% for(let tag of tags) { %>
+        <input type="checkbox" name="<%= tag.id %>"><%= tag.Tag %>
+          <% } %>
+      </div>
+      <br />
+      <input type="submit">
+    </form>
   </body>
 </html>

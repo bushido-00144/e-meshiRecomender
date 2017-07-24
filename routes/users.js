@@ -28,7 +28,7 @@ router.post('/', function(req, res, next) {
         Name: username,
         Tag: JSON.stringify(tags)
     }).then(function(){
-      res.send({Code: 200, Message: 'OK'});
+      res.redirect('/');
     }).catch(function(err){
       console.log(err);
       res.send({Code: 500, Message: 'ERROR'});
