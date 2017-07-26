@@ -30,13 +30,19 @@ router.get('/collaborative', (req, res, next) => {
   }).then((datas) => {
     let recipient = {};
     for(let restaurant of datas.Restaurant) {
-      recipient[restaurant.Name] = _.filter(datas.RecipientReview, {RestaurantID: restaurant.id})[0].Comprehensive;
+      let rest = _.filter(datas.RecipientReview, {RestaurantID: restaurant.id})[0];
+      if(rest) {
+        recipient[restaurant.Name] = rest.Comprehensive;
+      }
     }
     let others = {};
     for(let other of datas.Others) {
       others[other.Name] = {};
       for(let restaurant of datas.Restaurant) {
-        others[other.Name][restaurant.Name] = _.filter(datas.OtherReview, {RestaurantID: restaurant.id})[0].Comprehensive;
+        let rest = _.filter(datas.OtherReview, {RestaurantID: restaurant.id})[0];
+        if(rest) {
+          others[other.Name][restaurant.Name] = rest.Comprehensive;
+        }
       }
     }
     return {
@@ -44,11 +50,29 @@ router.get('/collaborative', (req, res, next) => {
       others: others
     };
   }).then((datas) => {
-    res.json(datas);
-    /*
     let recommendedItems = CollaborativeFiltering.recommend(datas.recipient, datas.others);
     res.json(recommendedItems);
-    */
+  }).catch((err) => {
+    console.log(err);
+    res.status(500);
+  });
+});
+
+router.get('/content', (req, res, next) => {
+  let userID = req.query.userid;
+  if(!userID) res.status(400);
+
+  Promise.all([
+    models.User.findOne({where: {id: userID}}),
+    models.Restaurant.findAll()
+  ]).then((results) => {
+    return {
+      Recipient: results[0],
+      Restaurant: results[1]
+    };
+  }).then((datas) => {
+    let recommendedItems = ContentBaseFiltering.recommend(datas.Recipient, datas.Restaurant);
+    res.json(recommendedItems);
   }).catch((err) => {
     console.log(err);
     res.status(500);

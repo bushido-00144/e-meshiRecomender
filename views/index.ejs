@@ -7,7 +7,6 @@
     <script type="text/javascript">
       let addTag = () => {
           let newTag = document.getElementById('newTag').value;
-          console.log(newTag);
           fetch('/tags/', {
               method: 'POST',
               body: JSON.stringify({newTag: newTag}),
@@ -73,6 +72,7 @@
         <option value="<%= restaurant.id %>"><%= restaurant.Name %></option>
         <% } %>
       </select>
+      <br />
       総合評価：
       <input type="number" value="0" name="Comprehensive" min="0.0" max="5.0" step="0.1">
       <br />
@@ -84,5 +84,43 @@
       <br />
       <input type="submit">
     </form>
+
+    <form name="recipientform">
+      <select name="Recipient">
+          <% for(let user of users) { %>
+        <option value="<%= user.id %>"><%= user.Name %></option>
+          <% } %>
+      </select>
+    </form>
+
+    <button onclick="getCollRecommend()">おすすめのお店を見る！</button>
+    <br />
+    <button onclick="getContRecommend()">おすすめのお店を見る！</button>
+
+    <script>
+      let getCollRecommend = () => {
+        let selectedIndex = document.forms['recipientform'].elements['Recipient'].selectedIndex;
+        let userid = document.forms['recipientform'].elements['Recipient'].options[selectedIndex].value;
+        fetch('/recommend/collaborative?userid=' + userid).then((res) => {
+          return res.json();
+        }).then((data) => {
+          console.log(data);
+        }).catch((err) => {
+          console.log(err);
+        });
+      }
+
+      let getContRecommend = () => {
+        let selectedIndex = document.forms['recipientform'].elements['Recipient'].selectedIndex;
+        let userid = document.forms['recipientform'].elements['Recipient'].options[selectedIndex].value;
+        fetch('/recommend/content?userid=' + userid).then((res) => {
+          return res.json();
+        }).then((data) => {
+          console.log(data);
+        }).catch((err) => {
+          console.log(err);
+        });
+      }
+    </script>
   </body>
 </html>
