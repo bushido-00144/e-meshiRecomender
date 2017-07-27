@@ -55,11 +55,9 @@ let genReviews = () => {
     };
   }).then((datas) => {
     let tasks = [];
-    console.log(datas);
     for(let user of datas.Users) {
       for(let restaurant of datas.Restaurants) {
         if(Math.floor(Math.random() * 11 + 1) % 2 === 1) {
-          console.log('revire');
           tasks.push(models.Review.create({
             RestaurantID: restaurant.id,
             Reviewer: user.id,
@@ -80,7 +78,6 @@ let genReviews = () => {
 
 let main = () => {
   let args = process.argv;
-  console.log(args);
   switch (args[2]) {
     case '-u':
       genUsers(Number(args[3]));
