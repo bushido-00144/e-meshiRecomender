@@ -1,126 +1,222 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>e-meshiRecomender</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+<head>
+  <title>e-meshiRecomender</title>
+  <link rel='stylesheet' href='/stylesheets/bootstrap.min.css' />
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
 
-    <script type="text/javascript">
-      let addTag = () => {
-          let newTag = document.getElementById('newTag').value;
-          fetch('/tags/', {
-              method: 'POST',
-              body: JSON.stringify({newTag: newTag}),
-              headers: {
-                  'Accept': 'aplication/json',
-                  'Content-Type': 'application/json'
-              }
-          }).then((res) => {
-             return res.json();
-          }).then((res) => {
-              console.log(res);
-              let tagEle = document.createElement('input');
-              tagEle.name = res.id;
-              tagEle.type = "checkbox";
-              tagEle.innerHTML = res.tagname;
-              document.getElementById('tags').appendChild(tagEle);
-          });
-      };
-    </script>
-  </head>
-  <body>
+  <script type="text/javascript">
+    let addTag = () => {
+      let newTag = document.getElementById('newTag').value;
+      fetch('/tags/', {
+        method: 'POST',
+        body: JSON.stringify({newTag: newTag}),
+        headers: {
+          'Accept': 'aplication/json',
+          'Content-Type': 'application/json'
+        }
+      }).then((res) => {
+        return res.json();
+      }).then((res) => {
+        console.log(res);
+        let tagEle = document.createElement('input');
+        tagEle.name = res.id;
+        tagEle.type = "checkbox";
+        tagEle.innerHTML = res.tagname;
+        document.getElementById('tags').appendChild(tagEle);
+      });
+    };
+  </script>
+</head>
+<body>
+<div class="container">
+  <div class="col-md-8 col-md-offset-2">
     <h3>ユーザー登録</h3>
-    <form action="/users/" method="post">
+    <form class="form-group" action="/users/" method="post">
       ユーザ名：
-      <input type="text" name="Username">
+      <input class="form-control" type="text" name="Username">
       <br />
       好みのタグ：
-      <div id="tags">
+      <div id="tags" class="form-check">
           <% for(let tag of tags) { %>
-        <input type="checkbox" name="<%= tag.id %>"><%= tag.Tag %>
+        <input class="form-check-input" type="checkbox" name="<%= tag.id %>"><%= tag.Tag %>
           <% } %>
       </div>
       <br />
-      <input type="submit">
+      <input class="btn btn-primary" type="submit">
     </form>
     タグ追加：
-    <input type="text" id="newTag">
-    <button id="addTagButton" onclick="addTag()">タグ追加</button>
+    <input class="form-control" type="text" id="newTag">
+    <button class="btn btn-default" id="addTagButton" onclick="addTag()">タグ追加</button>
 
     <h3>お店登録</h3>
-    <form action="/restaurants/" method="post">
+    <form class="form-group" action="/restaurants/" method="post">
       店名：
-      <input type="text" name="Name">
+      <input class="form-control" type="text" name="Name">
       <br />
       タグ：
       <div id="tags">
           <% for(let tag of tags) { %>
-        <input type="checkbox" name="<%= tag.id %>"><%= tag.Tag %>
+        <input class="form-check-input" type="checkbox" name="<%= tag.id %>"><%= tag.Tag %>
           <% } %>
       </div>
       <br />
-      <input type="submit">
+      <input class="btn btn-primary" type="submit">
     </form>
 
-    <form action="/reviews/" method="post">
-      <select name="Reviewer">
+    <form class="form-group" action="/reviews/" method="post">
+      <select class="form-control" name="Reviewer">
           <% for(let user of users) { %>
         <option value="<%= user.id %>"><%= user.Name %></option>
           <% } %>
       </select>
-      <select name="RestaurantID">
-        <% for(let restaurant of restaurants) { %>
+      <select class="form-control" name="RestaurantID">
+          <% for(let restaurant of restaurants) { %>
         <option value="<%= restaurant.id %>"><%= restaurant.Name %></option>
-        <% } %>
+          <% } %>
       </select>
       <br />
       総合評価：
-      <input type="number" value="0" name="Comprehensive" min="0.0" max="5.0" step="0.1">
+      <input class="form-control" type="number" value="0" name="Comprehensive" min="0.0" max="5.0" step="0.1">
       <br />
       味：
-      <input type="number" value="0" name="Taste" min="0.0" max="5.0" step="0.1">
+      <input class="form-control" type="number" value="0" name="Taste" min="0.0" max="5.0" step="0.1">
       <br />
       サービス：
-      <input type="number" value="0" name="Service" min="0.0" max="5.0" step="0.1">
+      <input class="form-control" type="number" value="0" name="Service" min="0.0" max="5.0" step="0.1">
       <br />
-      <input type="submit">
+      <input class="btn btn-primary" type="submit">
     </form>
 
     <form name="recipientform">
-      <select name="Recipient">
+      <select class="form-control" name="Recipient">
           <% for(let user of users) { %>
         <option value="<%= user.id %>"><%= user.Name %></option>
           <% } %>
       </select>
     </form>
 
-    <button onclick="getCollRecommend()">おすすめのお店を見る！</button>
+    <button class="btn btn-primary" onclick="getCollRecommend()">おすすめのお店を見る！</button>
     <br />
-    <button onclick="getContRecommend()">おすすめのお店を見る！</button>
+    <button class="btn btn-success" onclick="getContRecommend()">おすすめのお店を見る！</button>
+  </div>
+</div>
 
-    <script>
-      let getCollRecommend = () => {
-        let selectedIndex = document.forms['recipientform'].elements['Recipient'].selectedIndex;
-        let userid = document.forms['recipientform'].elements['Recipient'].options[selectedIndex].value;
-        fetch('/recommend/collaborative?userid=' + userid).then((res) => {
-          return res.json();
-        }).then((data) => {
-          console.log(data);
-        }).catch((err) => {
-          console.log(err);
-        });
-      }
+<div class="modal" id="collresult">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">おすすめのお店</h4>
+      </div>
+      <div class="modal-body">
+          総合
+        <table id="compre" class="table table-striped table-hover">
+          <thead>
+          <tr>
+            <th>店名</th>
+            <th>評価値</th>
+          </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+        味
+        <table id="taste" class="table table-striped table-hover">
+          <thead>
+          <tr>
+            <th>店名</th>
+            <th>評価値</th>
+          </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+        サービス
+        <table id="service" class="table table-striped table-hover">
+          <thead>
+          <tr>
+            <th>店名</th>
+            <th>評価値</th>
+          </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-      let getContRecommend = () => {
-        let selectedIndex = document.forms['recipientform'].elements['Recipient'].selectedIndex;
-        let userid = document.forms['recipientform'].elements['Recipient'].options[selectedIndex].value;
-        fetch('/recommend/content?userid=' + userid).then((res) => {
-          return res.json();
-        }).then((data) => {
-          console.log(data);
-        }).catch((err) => {
-          console.log(err);
-        });
+<div class="modal" id="contresult">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">おすすめのお店</h4>
+      </div>
+      <div class="modal-body">
+        <table id="contresultcont" class="table table-striped table-hover">
+          <thead>
+          <tr>
+            <th>店名</th>
+            <th>評価値</th>
+          </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<script>
+  let getCollRecommend = () => {
+    let selectedIndex = document.forms['recipientform'].elements['Recipient'].selectedIndex;
+    let userid = document.forms['recipientform'].elements['Recipient'].options[selectedIndex].value;
+    fetch('/recommend/collaborative?userid=' + userid).then((res) => {
+      return res.json();
+    }).then((data) => {
+      for(let c of data.Comprehensive.reverse()) {
+        $('#compre').append('<tr><td>'+c.name+'</td><td>'+c.score+'</td></tr>');
       }
-    </script>
-  </body>
+      for(let t of data.Taste.reverse()) {
+        $('#taste').append('<tr><td>'+t.name+'</td><td>'+t.score+'</td></tr>');
+      }
+      for(let s of data.Service.reverse()) {
+        $('#service').append('<tr><td>'+s.name+'</td><td>'+s.score+'</td></tr>');
+      }
+      $('#collresult').modal();
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
+  let getContRecommend = () => {
+    let selectedIndex = document.forms['recipientform'].elements['Recipient'].selectedIndex;
+    let userid = document.forms['recipientform'].elements['Recipient'].options[selectedIndex].value;
+    fetch('/recommend/content?userid=' + userid).then((res) => {
+      return res.json();
+    }).then((data) => {
+      console.log(data);
+      for(let i of data) {
+        $('#contresultcont').append('<tr><td>'+i.name+'</td><td>'+i.score+'</td></tr>');
+      }
+      $('#contresult').modal();
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+</script>
+</body>
 </html>

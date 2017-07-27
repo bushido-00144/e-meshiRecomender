@@ -29,19 +29,31 @@ router.get('/collaborative', (req, res, next) => {
     };
   }).then((datas) => {
     let recipient = {};
+    recipient.Comprehensive = {};
+    recipient.Taste = {};
+    recipient.Service = {};
     for(let restaurant of datas.Restaurant) {
       let rest = _.filter(datas.RecipientReview, {RestaurantID: restaurant.id})[0];
       if(rest) {
-        recipient[restaurant.Name] = rest.Comprehensive;
+        recipient.Comprehensive[restaurant.Name] = rest.Comprehensive;
+        recipient.Taste[restaurant.Name] = rest.Taste;
+        recipient.Service[restaurant.Name] = rest.Service;
       }
     }
     let others = {};
+    others.Comprehensive = {};
+    others.Taste = {};
+    others.Service = {};
     for(let other of datas.Others) {
-      others[other.Name] = {};
+      others.Comprehensive[other.Name] = {};
+      others.Taste[other.Name] = {};
+      others.Service[other.Name] = {};
       for(let restaurant of datas.Restaurant) {
         let rest = _.filter(datas.OtherReview, {RestaurantID: restaurant.id})[0];
         if(rest) {
-          others[other.Name][restaurant.Name] = rest.Comprehensive;
+          others.Comprehensive[other.Name][restaurant.Name] = rest.Comprehensive;
+          others.Taste[other.Name][restaurant.Name] = rest.Taste;
+          others.Service[other.Name][restaurant.Name] = rest.Service;
         }
       }
     }
@@ -50,7 +62,10 @@ router.get('/collaborative', (req, res, next) => {
       others: others
     };
   }).then((datas) => {
-    let recommendedItems = CollaborativeFiltering.recommend(datas.recipient, datas.others);
+    let recommendedItems = {};
+    recommendedItems.Comprehensive = _.sortBy(CollaborativeFiltering.recommend(datas.recipient.Comprehensive, datas.others.Comprehensive), ['score']);
+    recommendedItems.Taste = _.sortBy(CollaborativeFiltering.recommend(datas.recipient.Taste, datas.others.Taste), ['score']);
+    recommendedItems.Service = _.sortBy(CollaborativeFiltering.recommend(datas.recipient.Service, datas.others.Service), ['score']);
     res.json(recommendedItems);
   }).catch((err) => {
     console.log(err);
@@ -72,7 +87,7 @@ router.get('/content', (req, res, next) => {
     };
   }).then((datas) => {
     let recommendedItems = ContentBaseFiltering.recommend(datas.Recipient, datas.Restaurant);
-    res.json(recommendedItems);
+    res.json(_.sortBy(recommendedItems, ['score']));
   }).catch((err) => {
     console.log(err);
     res.status(500);
