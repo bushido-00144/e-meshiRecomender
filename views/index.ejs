@@ -187,12 +187,15 @@
     fetch('/recommend/collaborative?userid=' + userid).then((res) => {
       return res.json();
     }).then((data) => {
+      $('#compre tbody').empty();
       for(let c of data.Comprehensive.reverse()) {
         $('#compre').append('<tr><td>'+c.name+'</td><td>'+c.score+'</td></tr>');
       }
+      $('#taste tbody').empty();
       for(let t of data.Taste.reverse()) {
         $('#taste').append('<tr><td>'+t.name+'</td><td>'+t.score+'</td></tr>');
       }
+      $('#service tbody').empty();
       for(let s of data.Service.reverse()) {
         $('#service').append('<tr><td>'+s.name+'</td><td>'+s.score+'</td></tr>');
       }
@@ -208,7 +211,7 @@
     fetch('/recommend/content?userid=' + userid).then((res) => {
       return res.json();
     }).then((data) => {
-      console.log(data);
+      $('#contresultcont tbody').empty();
       for(let i of data) {
         $('#contresultcont').append('<tr><td>'+i.name+'</td><td>'+i.score+'</td></tr>');
       }
