@@ -7,11 +7,11 @@ let othersData = CollaborateFiltering.generateData(10, 20);
 
 let users = [];
 for(let user in othersData) {
-    users.push(user);
+  users.push(user);
 }
 let items = [];
 for(let item in othersData[users[0]]) {
-    items.push(item);
+  items.push(item);
 }
 
 let recipientData = CollaborateFiltering.generateRecipientData(items);
